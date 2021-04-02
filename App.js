@@ -8,6 +8,8 @@ import {db} from './firebase.js';
 import * as WebBrowser from 'expo-web-browser';
 import { color } from 'react-native-reanimated';
 
+//@mauricio_jr_lp
+
 function HomeScreen({navigation}) 
 {  
   const [servicos,setarServicos] = useState([]);
