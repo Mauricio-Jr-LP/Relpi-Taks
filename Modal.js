@@ -89,7 +89,7 @@ const style = StyleSheet.create ({
   },
   btnNavigation:
   {
-    backgroundColor: '#5f5380',
+    backgroundColor: '#38A6FF',
     padding: 20,
     marginTop: 15,
     flexDirection: 'row'

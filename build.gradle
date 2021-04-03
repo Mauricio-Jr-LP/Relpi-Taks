@@ -1,0 +1,17 @@
+allprojects {
+    repositories {
+        google()
+
+        // If you're using a version of Gradle lower than 4.1, you must instead use:
+        // maven {
+        //     url 'https://maven.google.com'
+        // }
+    }
+}
+
+apply plugin: 'com.android.application'
+    ...
+
+    dependencies {
+        implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    }

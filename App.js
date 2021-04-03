@@ -1,16 +1,65 @@
 import React,{useEffect,useState} from 'react';
-import { View, Text,Button,StyleSheet,ImageBackground,Image, StatusBar, LogBox } from 'react-native';
+import { View, Text,Button,TextInput, KeyboardAvoidingView,StyleSheet,ImageBackground,Image, StatusBar, LogBox } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {db} from './firebase.js';
+import {db}  from './firebase';
 import * as WebBrowser from 'expo-web-browser';
-import { color } from 'react-native-reanimated';
 import Modal from './Modal.js';
 
 //@mauricio_jr_lp
+/*function LoginScreen()
+{
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  function loginFireBase(){
+    db.auth().signInWithEmailAndPassword(email, password)
+  .then((userCredential) => {
+    // Signed in
+    var user = userCredential.user;
+    // ...
+  })
+  .catch((error) => {
+    var errorCode = error.code;
+    var errorMessage = error.message;
+  });
+  }
+
+  useEffect(()=> {
+    db.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        console.log(user.id);
+      } else {
+        console.log('n logado');
+      }
+    })
+  })
+  
+    return(
+        <KeyboardAvoidingView>
+
+        <View>
+            <Image source = {require('../myproject/assets/logo.png')} />
+        </View>
+
+        <View>
+          <TextInput placeholder = 'Usuario' onChangeText = {(email) => setEmail(email)} value = {email}/>
+          <TextInput placeholder = 'Senha' secureTextEntry = {true}  onChangeText = {(password) => setPassword(password)} value = {password} />
+          
+          <TouchableOpacity onPress = {() => {loginFireBase()}}>
+            <Text>
+              Entrar
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        </KeyboardAvoidingView>
+    )
+}
+*/ 
 
 function HomeScreen({navigation}) 
 {  
@@ -22,15 +71,10 @@ function HomeScreen({navigation})
           }));
       })
   },[])
-  /*
-  const abrirModal = () => {
-    //alert('clic')
-    setModal(!showModal);
-  }*/
 
   const image = { uri: 'https://scontent.fssa6-1.fna.fbcdn.net/v/t1.6435-9/167915955_2041335076008016_2340786154038023060_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=730e14&_nc_ohc=4PuIVy8lmu4AX-w4cIe&_nc_ht=scontent.fssa6-1.fna&oh=1658e87513c1e9e4ef89a35876b33c30&oe=608ECDBC' };
 
-  //LogBox.ignoreAllLogs(true);
+  LogBox.ignoreAllLogs(true);
   
   return (
     <View style={{flex:1}}>
@@ -152,7 +196,7 @@ function SettingsScreen() {
 function MyServiceScreen() {
   const [showModal, setModal] = useState(false);
   const abrirModal = () => {
-    alert('clic')
+    //alert('clic')
     setModal(!showModal);
   }
   const [servicos,setarServicos] = useState([]);
@@ -176,8 +220,8 @@ function MyServiceScreen() {
 
           <View style = {{ color: 'black'}}>
             <TouchableOpacity  onPress={() => abrirModal()} style = {{}}> 
-              <Text style = {{color: 'white', backgroundColor: '#3D4343', textAlignVertical: 'center', textAlign: 'center' , width: '100%', height: '100%'}}>
-                Adicionar noticia
+              <Text style = {{color: 'white', backgroundColor: '#38A6FF', textAlignVertical: 'center', textAlign: 'center' , width: '100%', height: '100%'}}>
+                Adicionar anúncio     
               </Text>
             </TouchableOpacity>
           </View>
@@ -200,13 +244,7 @@ export default function App() {
             iconName = focused
               ? 'home'
               : 'home';
-          } 
-          else if (route.name === 'Servico') 
-          {
-            iconName = focused 
-            ? 'peole' 
-            : 'list';
-          }            
+          }      
           else if (route.nome === 'Settings')
           {
             iconName = focused 
@@ -239,7 +277,7 @@ export default function App() {
     >
       <Tab.Navigator>
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Servico" component={ServicoScreen} />
+        <Stack.Screen name="Servico" component={ServicoScreen} />
         <Stack.Screen name="Adicionar Servico" component={MyServiceScreen} />
         <Tab.Screen name="Settings" component={SettingsScreen} />
       </Tab.Navigator>
