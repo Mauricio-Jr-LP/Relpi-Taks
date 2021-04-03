@@ -1,12 +1,12 @@
 {
   "expo": {
     "name": "Relpi Task",
-    "slug": "Relpi Task",
+    "slug": "relpi-task",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/logo2.png",
     "splash": {
-      "image": "./assets/splash2.png",
+      "image": "./assets/splash3.png",
       "resizeMode": "contain",
       "backgroundColor": "#38A6FF"
     },
@@ -21,12 +21,15 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/logo2.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "host.exp.expo"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "",
+    "githubUrl": "https://github.com/Mauricio-Jr-LP/Relpi-Taks"
   }
 }

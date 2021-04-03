@@ -1,65 +1,87 @@
 import React,{useEffect,useState} from 'react';
-import { View, Text,Button,TextInput, KeyboardAvoidingView,StyleSheet,ImageBackground,Image, StatusBar, LogBox } from 'react-native';
+import { View, Text,TextInput, StyleSheet,ImageBackground,Image, StatusBar } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {db}  from './firebase';
+import {auth}  from './firebase';
 import * as WebBrowser from 'expo-web-browser';
 import Modal from './Modal.js';
 
-//@mauricio_jr_lp
-/*function LoginScreen()
+//Dev - @mauricio_jr_lp
+
+function LoginScreen()
 {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [user, setUser] = useState('');
 
-  function loginFireBase(){
-    db.auth().signInWithEmailAndPassword(email, password)
-  .then((userCredential) => {
-    // Signed in
-    var user = userCredential.user;
-    // ...
-  })
-  .catch((error) => {
-    var errorCode = error.code;
-    var errorMessage = error.message;
-  });
-  }
-
-  useEffect(()=> {
-    db.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        console.log(user.id);
-      } else {
-        console.log('n logado');
+  useEffect(() => {
+    auth.onAuthStateChanged(function(val){
+      if(val != null){
+        setUser(val.email);
       }
     })
-  })
-  
-    return(
-        <KeyboardAvoidingView>
+  }, [])
 
-        <View>
+  const login = () => {
+    auth.signInWithEmailAndPassword(email, password).them(function(val)
+    {
+      setUser(val.email);
+    }).catch(function(error){
+      alert(erro.message);
+    })
+  }
+
+  const logout = () => {
+    auth.signOut();
+    setUser('');
+  }
+
+    if(!user){
+    return(
+       <View style = {{flex: 1, backgroundColor: '#38A6FF', height: '100%', width: '100%'}}>
+          <View style = {{flex: 1, alignItems: 'center', width: '100%', height: '50%', paddingTop: '40%'}}>
+            <Image source = {require('../myproject/assets/logo.png')} />
+          
+            <TextInput placeholder = 'Usuario' placeholderTextColor = "white" onChangeText = {(email) => setEmail(email)} value = {email} style = {{ width: '75%', height: 60, borderBottomWidth: 2, borderBottomColor: 'white'}} />
+            <TextInput placeholder = 'Senha' secureTextEntry = {true}  onChangeText = {(password) => setPassword(password)} value = {password} placeholderTextColor = "white" onChangeText = {(email) => setEmail(email)} value = {email} style = {{ textDecorationColor: 'red', width: '75%', height: 60, borderBottomWidth: 2, borderBottomColor: 'white'}} />
+            
+            <View style = {{ flex: 1, width: '75%', paddingTop: 25}}> 
+              <TouchableOpacity onPress = {() => {login()}}>
+                <View style = {{width: '100%', height: 50, borderColor: 'white', borderWidth: 2, borderRadius: 25, alignItems: 'center', justifyContent: 'center'}}>    
+                  <Text style = {{color: 'white'}}>
+                    Entrar
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+      </View>
+    )
+  }
+  else{
+    return(
+      <View style = {{flex: 1}}>
+
+          <View style = {{flex: 1}}>
             <Image source = {require('../myproject/assets/logo.png')} />
         </View>
 
         <View>
-          <TextInput placeholder = 'Usuario' onChangeText = {(email) => setEmail(email)} value = {email}/>
-          <TextInput placeholder = 'Senha' secureTextEntry = {true}  onChangeText = {(password) => setPassword(password)} value = {password} />
           
-          <TouchableOpacity onPress = {() => {loginFireBase()}}>
+          <TouchableOpacity onPress = {() => {logout()}}>
             <Text>
               Entrar
             </Text>
           </TouchableOpacity>
         </View>
-
-        </KeyboardAvoidingView>
+      </View>
     )
+  }
 }
-*/ 
 
 function HomeScreen({navigation}) 
 {  
@@ -73,8 +95,6 @@ function HomeScreen({navigation})
   },[])
 
   const image = { uri: 'https://scontent.fssa6-1.fna.fbcdn.net/v/t1.6435-9/167915955_2041335076008016_2340786154038023060_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=730e14&_nc_ohc=4PuIVy8lmu4AX-w4cIe&_nc_ht=scontent.fssa6-1.fna&oh=1658e87513c1e9e4ef89a35876b33c30&oe=608ECDBC' };
-
-  LogBox.ignoreAllLogs(true);
   
   return (
     <View style={{flex:1}}>
@@ -163,22 +183,15 @@ function ServicoScreen({ route, navigation }) {
           <Text style={{fontSize:27,color: 'white'}}>{route.params.tipo}</Text>
         </View>          
       </ImageBackground>   
-         <View style={{flex:0.8}}>
-         <Text style={{
-          fontSize:15,
-          color: 'black',
-          padding:20
-        }}
-        >
+      <View style={{flex:0.8}}>
+        <Text style={{ fontSize:15, color: 'black', padding:20 }}>
           {route.params.descricao}
         </Text>
       </View>
     </ScrollView>
     <View style = {{ padding: 10, width: '100%', alignItems: 'flex-end'}}>
       <TouchableOpacity onPress = {() => abrirNavegador(route.params.contato)}>
-        <ImageBackground  style = {{width: 50, height: 50, }} source={{ uri: 'https://logosmarcas.net/wp-content/uploads/2020/05/WhatsApp-Logo.png' }}>
-
-        </ImageBackground>
+        <ImageBackground  style = {{width: 50, height: 50, }} source={{ uri: 'https://logosmarcas.net/wp-content/uploads/2020/05/WhatsApp-Logo.png' }}></ImageBackground>
       </TouchableOpacity>
     </View>
     </View>
@@ -263,21 +276,22 @@ export default function App() {
         },
       })}
       tabBarOptions={{
-        activeTintColor: 'white',
+        activeTintColor: 'pink',
           inactiveTintColor: 'gray',
           style: 
           {
-            borderTopColor: 'white',
+            borderTopColor: 'blue',
             shadowRadius: 50,
-            shadowColor: 'white',
+            shadowColor: 'green',
             backgroundColor: '#0D1418'
           }
         }}
     
     >
       <Tab.Navigator>
+        <Tab.Screen name="Login" component={LoginScreen} />
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Servico" component={ServicoScreen} />
+        <Stack.Screen name="Servico" component={ServicoScreen}/>
         <Stack.Screen name="Adicionar Servico" component={MyServiceScreen} />
         <Tab.Screen name="Settings" component={SettingsScreen} />
       </Tab.Navigator>
@@ -300,5 +314,4 @@ const styles = StyleSheet.create({
     flex:0.5,
     height:200
   }
- 
 });
