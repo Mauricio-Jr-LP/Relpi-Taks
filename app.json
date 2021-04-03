@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "myproject",
-    "slug": "myproject",
+    "name": "Relpi Task",
+    "slug": "Relpi Task",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",

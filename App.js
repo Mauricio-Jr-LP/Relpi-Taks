@@ -3,10 +3,12 @@ import { View, Text,Button,StyleSheet,ImageBackground,Image, StatusBar, LogBox }
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {db} from './firebase.js';
 import * as WebBrowser from 'expo-web-browser';
 import { color } from 'react-native-reanimated';
+import Modal from './Modal.js';
 
 //@mauricio_jr_lp
 
@@ -20,7 +22,12 @@ function HomeScreen({navigation})
           }));
       })
   },[])
-  
+  /*
+  const abrirModal = () => {
+    //alert('clic')
+    setModal(!showModal);
+  }*/
+
   const image = { uri: 'https://scontent.fssa6-1.fna.fbcdn.net/v/t1.6435-9/167915955_2041335076008016_2340786154038023060_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=730e14&_nc_ohc=4PuIVy8lmu4AX-w4cIe&_nc_ht=scontent.fssa6-1.fna&oh=1658e87513c1e9e4ef89a35876b33c30&oe=608ECDBC' };
 
   //LogBox.ignoreAllLogs(true);
@@ -47,7 +54,6 @@ function HomeScreen({navigation})
                     <TouchableOpacity onPress={()=>navigation.navigate('Servico',
                       {
                         usuario: val.info.usuario,
-                        titulo: val.info.titulo,
                         descricao: val.info.descricao,
                         imagem: val.info.imagem,
                         tipo: val.info.tipo,
@@ -143,16 +149,98 @@ function SettingsScreen() {
   );
 }
 
+function MyServiceScreen() {
+  const [showModal, setModal] = useState(false);
+  const abrirModal = () => {
+    alert('clic')
+    setModal(!showModal);
+  }
+  const [servicos,setarServicos] = useState([]);
+  useEffect(()=>{
+      db.collection('servicos').onSnapshot(snapshot=>{
+        setarServicos(snapshot.docs.map(function(doc){
+              return {info:doc.data()}
+          }));
+      })
+  },[])
+  
+  return (
+    
+    <View style = {{flex:1, width: '100%', height: 75, backgroundColor: 'black'}}>
+    {
+        (showModal)?
+          <Modal showModal = {showModal} setModal = {setModal}/>
+        :
+        <View></View>
+      }
+
+          <View style = {{ color: 'black'}}>
+            <TouchableOpacity  onPress={() => abrirModal()} style = {{}}> 
+              <Text style = {{color: 'white', backgroundColor: '#3D4343', textAlignVertical: 'center', textAlign: 'center' , width: '100%', height: '100%'}}>
+                Adicionar noticia
+              </Text>
+            </TouchableOpacity>
+          </View>
+      </View> 
+  );
+}
+
 const Stack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;            
+          if (route.name === 'Home') 
+          {
+            iconName = focused
+              ? 'home'
+              : 'home';
+          } 
+          else if (route.name === 'Servico') 
+          {
+            iconName = focused 
+            ? 'peole' 
+            : 'list';
+          }            
+          else if (route.nome === 'Settings')
+          {
+            iconName = focused 
+            ? 'contact'
+            : 'contact';
+          }
+          else if (route.nome === 'Adicionar Servico')
+          {
+            iconName = focused 
+            ? 'contact'
+            : 'contact';
+          }
+
+          
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: 'white',
+          inactiveTintColor: 'gray',
+          style: 
+          {
+            borderTopColor: 'white',
+            shadowRadius: 50,
+            shadowColor: 'white',
+            backgroundColor: '#0D1418'
+          }
+        }}
+    
+    >
       <Tab.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Servico" component={ServicoScreen} />
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Servico" component={ServicoScreen} />
+        <Stack.Screen name="Adicionar Servico" component={MyServiceScreen} />
         <Tab.Screen name="Settings" component={SettingsScreen} />
       </Tab.Navigator>
     </NavigationContainer>
